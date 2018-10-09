@@ -1,5 +1,4 @@
 package str
-package str
 
 import (
 	"strings"
@@ -23,4 +22,3 @@ func TrimRight(s string) string {
 func TrimLeft(s string) string {
 	return strings.TrimLeft(s, whiteSpaceTrimSet)
 }
-
