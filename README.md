@@ -3,6 +3,9 @@
     <a href="https://github.com/evilsocket/islazy/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/evilsocket/islazy.svg?style=flat-square"></a>
     <a href="https://github.com/evilsocket/islazy/blob/master/LICENSE.md"><img alt="Software License" src="https://img.shields.io/badge/license-GPL3-brightgreen.svg?style=flat-square"></a>
     <a href="https://goreportcard.com/report/github.com/evilsocket/islazy"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/evilsocket/islazy?style=flat-square&fuckgithubcache=1"></a>
+    <a href="http://godoc.org/github.com/evilsocket/islazy">
+        <img alt="Docs" src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square">
+    </a>
   </p>
 </p>
 
