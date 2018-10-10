@@ -9,7 +9,7 @@
   </p>
 </p>
 
-`evilsocket/islazy` is a Go package containing a set of objects, helpers and functions I often find myself using in my projects.
+evilsocket/islazy is a Go package containing a set of objects, helpers and functions I often find myself using in my projects.
 
     go get -u github.com/evilsocket/islazy
 
