@@ -1,8 +1,7 @@
 package plugin
 
 import (
-	"unicode"
-
+	// "unicode"
 	"github.com/robertkrimen/otto"
 )
 
@@ -24,13 +23,13 @@ func (p *Plugin) compile() (err error) {
 		// ignore predefined objects
 		if _, found := predefined[name]; !found {
 			// ignore lowercase global objects
-			if unicode.IsUpper(rune(name[0])) {
-				if sym.IsFunction() {
-					p.callbacks[name] = sym
-				} else {
-					p.objects[name] = sym
-				}
+			// if unicode.IsUpper(rune(name[0])) {
+			if sym.IsFunction() {
+				p.callbacks[name] = sym
+			} else {
+				p.objects[name] = sym
 			}
+			// }
 		}
 	}
 	return nil

@@ -55,8 +55,7 @@ func (p *Plugin) Clone() *Plugin {
 	return clone
 }
 
-// Call executes one of the exported (starting with an uppercase letter)
-// callbacks of the plugin by its name.
+// Call executes one of the declared callbacks of the plugin by its name.
 func (p *Plugin) Call(name string, args ...interface{}) (error, interface{}) {
 	if cb, found := p.callbacks[name]; !found {
 		return fmt.Errorf("%s does not name a function", name), nil
