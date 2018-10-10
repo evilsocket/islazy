@@ -96,6 +96,63 @@ for i := 0; i < 10; i++ {
 q.WaitDone()
 ```
 
+**[islazy/plugin](https://godoc.org/github.com/evilsocket/islazy/plugin)**
+
+From [the shellz project](https://github.com/evilsocket/shellz):
+
+```go
+type Plugin struct {
+	*plugin.Plugin
+
+	timeouts core.Timeouts
+	ctx      interface{}
+}
+
+func LoadPlugin(path string) (error, *Plugin) {
+	if p, err := plugin.Load(path, defines); err != nil {
+		return err, nil
+	} else {
+		return nil, &Plugin{
+			Plugin: p,
+		}
+	}
+}
+
+func (p *Plugin) NewSession(sh models.Shell, timeouts core.Timeouts) (err error, clone *Plugin) {
+	p.Lock()
+	defer p.Unlock()
+
+	if err, clone = LoadPlugin(p.Path); err != nil {
+		return
+	}
+    // ... cut ...
+    clone.ctx, err = clone.Call("Create", sh)
+    // ... cut ...
+	return
+}
+
+// ... cut ...
+
+func (p *Plugin) Exec(cmd string) ([]byte, error) {
+	p.Lock()
+	defer p.Unlock()
+// ... cut ...
+    if ret, err := p.Call("Exec", p.ctx, cmd); err != nil {
+        return eres{err: err}
+    } 
+// ... cut ...
+}
+
+func (p *Plugin) Close() {
+	p.Lock()
+	defer p.Unlock()
+
+	if err, _ := p.Call("Close", p.ctx); err != nil {
+		log.Warning("error while running Close callback for plugin %s: %s", p.Name, err)
+	}
+}
+```
+
 ## License
 
 This library was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it's released under the GPL 3 license.
