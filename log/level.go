@@ -53,5 +53,5 @@ func LevelColor(v Verbosity) string {
 	if NoEffects {
 		return ""
 	}
-	return LevelColors(v)
+	return LevelColors[v]
 }
