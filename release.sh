@@ -3,7 +3,7 @@
 
 CURRENT_VERSION=$(cat version/ver.go | grep "Version =" | cut -d '"' -f 2)
 TO_UPDATE=(
-    core/version.go
+    version/ver.go
 )
 
 echo -n "Current version is $CURRENT_VERSION, select new version: "
