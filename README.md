@@ -53,6 +53,26 @@ str.SplitBy("1,2,,3,4,", "," ) == []string{ "1", "2", "3", "4" }
 str.Comma("1,2,,3,4,") == []string{ "1", "2", "3", "4" }
 ```
 
+**[islazy/fs](https://godoc.org/github.com/evilsocket/islazy/fs)**
+
+```go
+// misc
+fs.Expand("~/") -> "/home/evilsocket"
+fs.Exists("nope") == false
+
+// globbing
+fs.Glob( "/some/path/", "*.log", cn fun(fileName string) error {
+    // do something with fileName
+    return nil
+})
+
+// reading
+lines, err := fs.LineReader("/some/file.log")
+for line := range lines {
+
+}
+```
+
 ## License
 
 This library was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it's released under the GPL 3 license.
