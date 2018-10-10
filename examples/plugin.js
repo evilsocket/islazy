@@ -5,3 +5,5 @@ function Hello() {
         "bar": true
     };
 }
+
+var Text = "Hello world";

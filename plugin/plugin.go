@@ -82,3 +82,123 @@ func (p *Plugin) Call(name string, args ...interface{}) (interface{}, error) {
 	}
 	return nil, nil
 }
+
+// Methods returns a list of methods exported from the javascript
+func (p *Plugin) Methods() []string {
+	methods := []string{}
+	for key, _ := range p.callbacks {
+		methods = append(methods, key)
+	}
+	return methods
+}
+
+// Objects returns a list of object exported by the javascript
+func (p *Plugin) Objects() []string {
+	objs := []string{}
+	for key, _ := range p.callbacks {
+		objs = append(objs, key)
+	}
+	return objs
+}
+
+// GetTypeObject returns the type of the object by its name
+func (p *Plugin) GetTypeObject(name string) string {
+	if obj, found := p.objects[name]; !found {
+		return ""
+	} else if obj.IsPrimitive() {
+		if obj.IsBoolean() {
+			return "BooleanPrimitive"
+		} else if obj.IsNumber() {
+			return "NumberPrimitive"
+		} else if obj.IsString() {
+			return "StringPrimitive"
+		}
+	} else if obj.IsObject() {
+		switch obj.Class() {
+		case "Array":
+			return "ArrayObject"
+		case "String":
+			return "StringObject"
+		case "Boolean":
+			return "BooleanObject"
+		case "Number":
+			return "NumberObject"
+		case "Date":
+			return "DateObject"
+		case "RegExp":
+			return "RegExpObject"
+		case "Error":
+			return "ErrorObject"
+		}
+	}
+	return ""
+}
+
+// IsStringPrimitive returns true if the object with a
+// given name is a javascript primitive string
+func (p *Plugin) IsStringPrimitive(name string) bool {
+	return p.GetTypeObject(name) == "StringPrimitive"
+}
+
+// IsBooleanPrimitive returns true if the object with a
+// given name is a javascript primitive boolean, false otherwise
+func (p *Plugin) IsBooleanPrimitive(name string) bool {
+	return p.GetTypeObject(name) == "BooleanPrimitive"
+}
+
+// IsNumberPrimitive returns true if the object with a
+// given name is a javascript primitive number, false otherwise
+func (p *Plugin) IsNumberPrimitive(name string) bool {
+	return p.GetTypeObject(name) == "NumberPrimitive"
+}
+
+// IsArrayObject returns true if the object with a
+// given name is a javascript array object, false otherwise
+func (p *Plugin) IsArrayObject(name string) bool {
+	return p.GetTypeObject(name) == "ArrayObject"
+}
+
+// IsStringObject returns true if the object with a
+// given name is a javascript string object, false otherwise
+func (p *Plugin) IsStringObject(name string) bool {
+	return p.GetTypeObject(name) == "StringObject"
+}
+
+// IsBooleanObject returns true if the object with a
+// given name is a javascript boolean object, false otherwise
+func (p *Plugin) IsBooleanObject(name string) bool {
+	return p.GetTypeObject(name) == "BooleanObject"
+}
+
+// IsNumberObject returns true if the object with a
+// given name is a javascript Number object, false otherwise
+func (p *Plugin) IsNumberObject(name string) bool {
+	return p.GetTypeObject(name) == "NumberObject"
+}
+
+// IsDateObject returns true if the object with a
+// given name is a javascript Date object, false otherwise
+func (p *Plugin) IsDateObject(name string) bool {
+	return p.GetTypeObject(name) == "DateObject"
+}
+
+// IsRegExpObject returns true if the object with a
+// given name is a javascript RegExp object, false otherwise
+func (p *Plugin) IsRegExpObject(name string) bool {
+	return p.GetTypeObject(name) == "RegExpObject"
+}
+
+// IsErrorObject returns true if the object with a
+// given name is a javascript error object, false otherwise
+func (p *Plugin) IsErrorObject(name string) bool {
+	return p.GetTypeObject(name) == "ErrorObject"
+}
+
+// GetObject returns an interface containing the value of the object by its name
+func (p *Plugin) GetObject(name string) (interface{}, error) {
+	if obj, found := p.objects[name]; !found {
+		return nil, fmt.Errorf("%s does not name an object", name)
+	} else {
+		return obj.Export()
+	}
+}

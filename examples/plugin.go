@@ -20,10 +20,18 @@ func main() {
 		return
 	}
 
-	ret, err := plug.Call("Hello")
-	if err != nil {
-		fmt.Printf("error while calling Hello function: %v\n", err)
-	} else if ret != nil {
-		fmt.Printf("Hello returned %v\n", ret)
+	methods := plug.Methods()
+	for _, m := range methods {
+		ret, err := plug.Call(m)
+		if err != nil {
+			fmt.Printf("error while calling Hello function: %v\n", err)
+		} else if ret != nil {
+			fmt.Printf("Hello returned %v\n", ret)
+		}
+
 	}
+
+	obj, err := plug.GetObject("Text")
+	fmt.Printf("Var Text returned '%s'\n", obj.(string))
+
 }
