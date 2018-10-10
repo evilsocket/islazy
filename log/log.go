@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -14,6 +15,8 @@ var (
 	Level = INFO
 	// Output represents the log output file path if filled or, if empty, stdout.
 	Output = ""
+	// NoEffects disables all effects and colors if set to true.
+	NoEffects = false
 	// OnFatal represents the callback/action to execute on Fatal messages.
 	OnFatal = ExitOnFatal
 
@@ -21,6 +24,12 @@ var (
 	currMessage = ""
 	currLevel   = INFO
 	writer      = os.Stdout
+
+	reEffects = []*regexp.Regexp{
+		regexp.MustCompile("\x033\\[\\d+m"),
+		regexp.MustCompile("\\\\e\\[\\d+m"),
+		regexp.MustCompile("\x1b\\[\\d+m"),
+	}
 )
 
 // Open initializes the logging system.
@@ -36,6 +45,18 @@ func Close() {
 	if writer != os.Stdout {
 		writer.Close()
 	}
+}
+
+func emit(s string) {
+	// remove all effects if found
+	if NoEffects {
+		for _, re := range reEffects {
+			s = re.ReplaceAllString(s, "")
+		}
+	}
+
+	fmt.Fprintf(writer, s)
+	fmt.Fprintf(writer, "\n")
 }
 
 func do(v Verbosity, format string, args ...interface{}) {
@@ -62,8 +83,7 @@ func do(v Verbosity, format string, args ...interface{}) {
 		logLine += tui.RESET
 	}
 
-	fmt.Fprintf(writer, logLine)
-	fmt.Fprintf(writer, "\n")
+	emit(logLine)
 }
 
 // Raw emits a message without format to the logs.
@@ -72,9 +92,7 @@ func Raw(format string, args ...interface{}) {
 	defer lock.Unlock()
 
 	currMessage = fmt.Sprintf(format, args...)
-
-	fmt.Fprintf(writer, currMessage)
-	fmt.Fprintf(writer, "\n")
+	emit(currMessage)
 }
 
 // Debug emits a debug message.
