@@ -66,6 +66,17 @@ func do(v Verbosity, format string, args ...interface{}) {
 	fmt.Fprintf(writer, "\n")
 }
 
+// Raw emits a message without format to the logs.
+func Raw(format string, args ...interface{}) {
+	lock.Lock()
+	defer lock.Unlock()
+
+	currMessage = fmt.Sprintf(format, args...)
+
+	fmt.Fprintf(writer, currMessage)
+	fmt.Fprintf(writer, "\n")
+}
+
 // Debug emits a debug message.
 func Debug(format string, args ...interface{}) {
 	do(DEBUG, format, args...)

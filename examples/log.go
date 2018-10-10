@@ -19,6 +19,7 @@ func main() {
 	}
 	defer log.Close()
 
+	log.Raw("hello world")
 	log.Debug("hello world")
 	log.Info("hello world")
 	log.Important("hello world")
