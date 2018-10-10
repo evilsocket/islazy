@@ -7,19 +7,19 @@ import (
 
 func (p *Plugin) compile() (err error) {
 	// create a new vm
-	p.VM = otto.New()
+	p.vm = otto.New()
 	// track objects already defined by Otto
 	predefined := map[string]bool{}
-	for name := range p.VM.Context().Symbols {
+	for name := range p.vm.Context().Symbols {
 		predefined[name] = true
 	}
 	// run the code once in order to define all the functions
 	// and validate the syntax, then get the callbacks
-	if _, err = p.VM.Run(p.Code); err != nil {
+	if _, err = p.vm.Run(p.Code); err != nil {
 		return
 	}
 	// every uppercase object is considered exported
-	for name, sym := range p.VM.Context().Symbols {
+	for name, sym := range p.vm.Context().Symbols {
 		// ignore predefined objects
 		if _, found := predefined[name]; !found {
 			// ignore lowercase global objects

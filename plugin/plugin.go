@@ -23,6 +23,7 @@ type Plugin struct {
 	Path string
 
 	vm        *otto.Otto
+	defines   map[string]interface{}
 	callbacks map[string]otto.Value
 	objects   map[string]otto.Value
 }
@@ -39,6 +40,7 @@ func Load(path string, defines map[string]interface{}) (error, *Plugin) {
 		Name:      strings.Replace(filepath.Base(path), ".js", "", -1),
 		Code:      string(raw),
 		Path:      path,
+		defines:   defines,
 		callbacks: make(map[string]otto.Value),
 		objects:   make(map[string]otto.Value),
 	}
@@ -58,7 +60,7 @@ func Load(path string, defines map[string]interface{}) (error, *Plugin) {
 
 // Clone returns a new instance identical to the plugin.
 func (p *Plugin) Clone() *Plugin {
-	_, clone := Load(p.Path)
+	_, clone := Load(p.Path, p.defines)
 	return clone
 }
 
