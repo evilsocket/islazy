@@ -40,6 +40,24 @@ func Effects() bool {
 	return true
 }
 
+// Disable will disable all colors and effects.
+func Disable() {
+	BOLD = ""
+	DIM = ""
+	RESET = ""
+	RED = ""
+	GREEN = ""
+	BLUE = ""
+	YELLOW = ""
+	FOREBLACK = ""
+	FOREWHITE = ""
+	BACKDARKGRAY = ""
+	BACKRED = ""
+	BACKGREEN = ""
+	BACKYELLOW = ""
+	BACKLIGHTBLUE = ""
+}
+
 // HasEffect returns true if the string has any shell control codes in it.
 func HasEffect(s string) bool {
 	for _, ch := range ctrl {
