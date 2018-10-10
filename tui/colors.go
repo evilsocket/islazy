@@ -1,49 +1,74 @@
 package tui
 
+import (
+	"strings"
+)
+
 // https://misc.flogisoft.com/bash/tip_colors_and_formatting
 var (
 	// effects
-	bold  = "\033[1m"
-	dim   = "\033[2m"
-	reset = "\033[0m"
+	BOLD  = "\033[1m"
+	DIM   = "\033[2m"
+	RESET = "\033[0m"
 	// colors
-	red    = "\033[31m"
-	green  = "\033[32m"
-	blue   = "\033[34m"
-	yellow = "\033[33m"
+	RED    = "\033[31m"
+	GREEN  = "\033[32m"
+	BLUE   = "\033[34m"
+	YELLOW = "\033[33m"
+	// foreground colors
+	FOREBLACK = "\033[30m"
+	FOREWHITE = "\033[97m"
+	// background colors
+	BACKDARKGRAY  = "\033[100m"
+	BACKRED       = "\033[41m"
+	BACKGREEN     = "\033[42m"
+	BACKYELLOW    = "\033[43m"
+	BACKLIGHTBLUE = "\033[104m"
+
+	ctrl = []string{"\x033", "\\e", "\x1b"}
 )
 
-// w for wrap
-func w(e, s string) string {
-	return e + s + reset
+// HasEffect returns true if the string has any shell control codes in it.
+func HasEffect(s string) bool {
+	for _, ch := range ctrl {
+		if strings.Contains(s, ch) {
+			return true
+		}
+	}
+	return false
 }
 
-// Bold makes the string bold.
+// Wrap wraps a string with an effect or color and appends a reset control code.
+func Wrap(e, s string) string {
+	return e + s + RESET
+}
+
+// Bold makes the string Bold.
 func Bold(s string) string {
-	return w(bold, s)
+	return Wrap(BOLD, s)
 }
 
-// Dim makes the string diminished.
+// Dim makes the string Diminished.
 func Dim(s string) string {
-	return w(dim, s)
+	return Wrap(DIM, s)
 }
 
-// Red makes the string red.
+// Red makes the string Red.
 func Red(s string) string {
-	return w(red, s)
+	return Wrap(RED, s)
 }
 
-// Green makes the string green.
+// Green makes the string Green.
 func Green(s string) string {
-	return w(green, s)
+	return Wrap(GREEN, s)
 }
 
-// Blue makes the string green.
+// Blue makes the string Green.
 func Blue(s string) string {
-	return w(blue, s)
+	return Wrap(BLUE, s)
 }
 
-// Yellow makes the string green.
+// Yellow makes the string Green.
 func Yellow(s string) string {
-	return w(yellow, s)
+	return Wrap(YELLOW, s)
 }
