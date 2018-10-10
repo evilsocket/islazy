@@ -1,6 +1,7 @@
 package tui
 
 import (
+	"os"
 	"strings"
 )
 
@@ -27,6 +28,17 @@ var (
 
 	ctrl = []string{"\x033", "\\e", "\x1b"}
 )
+
+// Effects returns true if colors and effects are supported
+// on the current terminal.
+func Effects() bool {
+	if term := os.Getenv("TERM"); term == "" {
+		return false
+	} else if term == "dumb" {
+		return false
+	}
+	return true
+}
 
 // HasEffect returns true if the string has any shell control codes in it.
 func HasEffect(s string) bool {

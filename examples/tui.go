@@ -8,6 +8,11 @@ import (
 )
 
 func main() {
+	if !tui.Effects() {
+		fmt.Printf("tui effects not available on this terminal.\n")
+		return
+	}
+
 	// ASCII tables on the terminal
 	columns := []string{
 		"City",
