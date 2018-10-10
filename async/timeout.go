@@ -8,8 +8,8 @@ import (
 type TimedCallback func() interface{}
 
 // WithTimeout will execute the callback and return its value or a
-// TimeoutError if its execution will exceed the provided duration.
-func WithTimeout(tm time.Duration, cb TimedCallback) (error, interface{}) {
+// ErrTimeout if its execution will exceed the provided duration.
+func WithTimeout(tm time.Duration, cb TimedCallback) (interface{}, error) {
 	timeout := time.After(tm)
 	done := make(chan interface{})
 	go func() {
@@ -18,13 +18,13 @@ func WithTimeout(tm time.Duration, cb TimedCallback) (error, interface{}) {
 
 	select {
 	case <-timeout:
-		return TimeoutError, nil
+		return nil, ErrTimeout
 	case res := <-done:
 		if res != nil {
 			if e, ok := res.(error); ok {
-				return e, nil
+				return nil, e
 			}
 		}
-		return nil, res
+		return res, nil
 	}
 }

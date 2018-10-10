@@ -5,5 +5,6 @@ import (
 )
 
 var (
-	TimeoutError = errors.New("timeout")
+	// ErrTimeout happens when there's a timeout ... doh.
+	ErrTimeout = errors.New("timeout")
 )
