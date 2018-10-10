@@ -51,7 +51,7 @@ func Load(path string) (error, *Plugin) {
 
 // Clone returns a new instance identical to the plugin.
 func (p *Plugin) Clone() *Plugin {
-	_, clone := LoadPlugin(p.Path)
+	_, clone := Load(p.Path)
 	return clone
 }
 
