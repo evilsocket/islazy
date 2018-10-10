@@ -15,7 +15,7 @@ evilsocket/islazy is a Go package containing a set of objects, helpers and funct
 
 ## Examples
 
-*[islazy/tui](https://godoc.org/github.com/evilsocket/islazy/tui)*
+**[islazy/tui](https://godoc.org/github.com/evilsocket/islazy/tui)**
 
 ```go
 // ASCII tables on the terminal
@@ -38,6 +38,19 @@ if err != nil {
 } else {
     fmt.Printf("%s\n", tui.Green("Ok"))
 }
+```
+
+**[islazy/str](https://godoc.org/github.com/evilsocket/islazy/str)**
+
+```go
+// trimming
+str.Trim(" hello world ") == "hello world"
+str.TrimRight(" hello world ") == " hello world"
+str.TrimLeft(" hello world ") == "hello world "
+
+// splitting
+str.SplitBy("1,2,,3,4,", "," ) == []string{ "1", "2", "3", "4" }
+str.Comma("1,2,,3,4,") == []string{ "1", "2", "3", "4" }
 ```
 
 ## License
