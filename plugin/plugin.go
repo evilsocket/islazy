@@ -21,8 +21,9 @@ type Plugin struct {
 	Code string
 	// The full path of the plugin.
 	Path string
+	// The virtual machine instance.
+	VM *otto.Otto
 
-	vm        *otto.Otto
 	callbacks map[string]otto.Value
 	objects   map[string]otto.Value
 }
