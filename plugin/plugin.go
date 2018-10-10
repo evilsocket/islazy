@@ -74,11 +74,11 @@ func (p *Plugin) Call(name string, args ...interface{}) (interface{}, error) {
 	} else if ret, err := cb.Call(otto.NullValue(), args...); err != nil {
 		return nil, err
 	} else if !ret.IsUndefined() {
-		if exported, err := ret.Export(); err != nil {
+		exported, err := ret.Export()
+		if err != nil {
 			return nil, err
-		} else {
-			return exported, nil
 		}
+		return exported, nil
 	}
 	return nil, nil
 }
