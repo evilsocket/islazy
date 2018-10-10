@@ -21,15 +21,15 @@ type Plugin struct {
 	Code string
 	// The full path of the plugin.
 	Path string
-	// The virtual machine instance.
-	VM *otto.Otto
 
+	vm        *otto.Otto
 	callbacks map[string]otto.Value
 	objects   map[string]otto.Value
 }
 
-// Load loads and compiles a plugin given its path.
-func Load(path string) (error, *Plugin) {
+// Load loads and compiles a plugin given its path with the
+// provided definitions.
+func Load(path string, defines map[string]interface{}) (error, *Plugin) {
 	raw, err := ioutil.ReadFile(path)
 	if err != nil {
 		return err, nil
@@ -45,6 +45,12 @@ func Load(path string) (error, *Plugin) {
 
 	if err = plugin.compile(); err != nil {
 		return err, nil
+	}
+
+	for name, val := range defines {
+		if err := plugin.vm.Set(name, val); err != nil {
+			return err, nil
+		}
 	}
 
 	return nil, plugin
