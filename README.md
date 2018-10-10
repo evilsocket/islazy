@@ -87,6 +87,7 @@ func logic(arg async.Job) {
     fmt.Printf("got job %d", arg.(int))
 }
 
+// -1/0 = use all logical CPUs
 q := async.NewQueue(0, logic)
 
 for i := 0; i < 10; i++ {
