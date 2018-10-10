@@ -28,23 +28,22 @@ func maxLen(strings []string) int {
 	return maxLen
 }
 
-// Alignment represent the text alignment on the terminal ui.
-type Alignment int
+type alignment int
 
 const (
-	AlignLeft   = Alignment(0)
-	AlignCenter = Alignment(1)
-	AlignRight  = Alignment(2)
+	alignLeft   = alignment(0)
+	alignCenter = alignment(1)
+	alignRight  = alignment(2)
 )
 
-func getPads(s string, maxLen int, align Alignment) (lPad int, rPad int) {
+func getPads(s string, maxLen int, align alignment) (lPad int, rPad int) {
 	len := viewLen(s)
 	diff := maxLen - len
 
-	if align == AlignLeft {
+	if align == alignLeft {
 		lPad = 0
 		rPad = diff - lPad + 1
-	} else if align == AlignCenter {
+	} else if align == alignCenter {
 		lPad = diff / 2
 		rPad = diff - lPad + 1
 	} /* else {
@@ -54,7 +53,7 @@ func getPads(s string, maxLen int, align Alignment) (lPad int, rPad int) {
 	return
 }
 
-func padded(s string, maxLen int, align Alignment) string {
+func padded(s string, maxLen int, align alignment) string {
 	lPad, rPad := getPads(s, maxLen, align)
 	return fmt.Sprintf("%s%s%s", strings.Repeat(" ", lPad), s, strings.Repeat(" ", rPad))
 }
@@ -91,7 +90,7 @@ func Table(w io.Writer, columns []string, rows [][]string) {
 	// header
 	table += fmt.Sprintf("%s\n", lineSep)
 	for colIndex, colHeader := range columns {
-		table += fmt.Sprintf("|%s", padded(colHeader, colPaddings[colIndex], AlignCenter))
+		table += fmt.Sprintf("|%s", padded(colHeader, colPaddings[colIndex], alignCenter))
 	}
 	table += fmt.Sprintf("|\n")
 	table += fmt.Sprintf("%s\n", lineSep)
@@ -99,7 +98,7 @@ func Table(w io.Writer, columns []string, rows [][]string) {
 	// rows
 	for _, row := range rows {
 		for colIndex, cell := range row {
-			table += fmt.Sprintf("|%s", padded(cell, colPaddings[colIndex], AlignLeft))
+			table += fmt.Sprintf("|%s", padded(cell, colPaddings[colIndex], alignLeft))
 		}
 		table += fmt.Sprintf("|\n")
 	}
