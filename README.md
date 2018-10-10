@@ -13,7 +13,7 @@
 
     go get -u github.com/evilsocket/islazy
 
-Examples for each package can be found in the `examples` folder.
+Examples for each package can be found in the [examples](https://github.com/evilsocket/islazy/tree/master/examples) folder.
 
 ## License
 
