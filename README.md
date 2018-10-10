@@ -73,6 +73,29 @@ for line := range lines {
 }
 ```
 
+**[islazy/async](https://godoc.org/github.com/evilsocket/islazy/async)**
+
+```go
+// timed calls
+ret, err := async.WithTimeout( 5 * time.Second, func() interface{}{
+    // do something here
+    return nil
+})
+
+// multi core work queue
+func logic(arg async.Job) {
+    fmt.Printf("got job %d", arg.(int))
+}
+
+q := async.NewQueue(0, logic)
+
+for i := 0; i < 10; i++ {
+    q.Add(async.Job(i))
+}
+
+q.WaitDone()
+```
+
 ## License
 
 This library was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it's released under the GPL 3 license.
