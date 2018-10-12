@@ -67,6 +67,13 @@ func (p *Plugin) Clone() *Plugin {
 	return clone
 }
 
+// HasFunc returns true if the function with `name`
+// has been declared in the plugin code.
+func (p *Plugin) HasFunc(name string) bool {
+	_, found := p.callbacks[name]
+	return found
+}
+
 // Call executes one of the declared callbacks of the plugin by its name.
 func (p *Plugin) Call(name string, args ...interface{}) (interface{}, error) {
 	if cb, found := p.callbacks[name]; !found {

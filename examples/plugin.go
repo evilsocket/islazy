@@ -24,14 +24,14 @@ func main() {
 	for _, m := range methods {
 		ret, err := plug.Call(m)
 		if err != nil {
-			fmt.Printf("error while calling Hello function: %v\n", err)
+			fmt.Printf("error while calling %s function: %v\n", m, err)
 		} else if ret != nil {
-			fmt.Printf("Hello returned %v\n", ret)
+			fmt.Printf("%s returned %v\n", m, ret)
 		}
 
 	}
 
 	obj, err := plug.GetObject("Text")
-	fmt.Printf("Var Text returned '%s'\n", obj.(string))
+	fmt.Printf("plugin.Text = '%s'\n", obj.(string))
 
 }
