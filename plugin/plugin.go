@@ -31,23 +31,15 @@ type Plugin struct {
 	objects   map[string]otto.Value
 }
 
-// Load loads and compiles a plugin given its path with the
-// provided definitions.
-func Load(path string) (*Plugin, error) {
-	raw, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
+// Parse parsesand compiles a plugin given its source code.
+func Parse(code string) (*Plugin, error) {
 	plugin := &Plugin{
-		Name:      strings.Replace(filepath.Base(path), ".js", "", -1),
-		Code:      string(raw),
-		Path:      path,
+		Code:      code,
 		callbacks: make(map[string]otto.Value),
 		objects:   make(map[string]otto.Value),
 	}
 
-	if err = plugin.compile(); err != nil {
+	if err := plugin.compile(); err != nil {
 		return nil, err
 	}
 
@@ -57,12 +49,30 @@ func Load(path string) (*Plugin, error) {
 		}
 	}
 
-	return plugin, err
+	return plugin, nil
+}
+
+// Load loads and compiles a plugin given its path.
+func Load(path string) (plug *Plugin, err error) {
+	if raw, err := ioutil.ReadFile(path); err != nil {
+		return nil, err
+	} else if plug, err = Parse(string(raw)); err != nil {
+		return nil, err
+	} else {
+		plug.Path = path
+		plug.Name = strings.Replace(filepath.Base(path), ".js", "", -1)
+	}
+	return plug, nil
 }
 
 // Clone returns a new instance identical to the plugin.
-func (p *Plugin) Clone() *Plugin {
-	clone, err := Load(p.Path)
+func (p *Plugin) Clone() (clone *Plugin) {
+	var err error
+	if p.Path == "" {
+		clone, err = Parse(p.Code)
+	} else {
+		clone, err = Load(p.Path)
+	}
 	if err != nil {
 		panic(err) // this should never happen
 	}
