@@ -15,6 +15,13 @@
 
 Examples for each package can be found in the [examples](https://github.com/evilsocket/islazy/tree/master/examples) folder.
 
+## Who's using islazy?
+
+* [bettercap](https://github.com/bettercap/bettercap)
+* [shellz](https://github.com/evilsocket/islazy)
+
+If your project is using this library add it to this README and send a PR!
+
 ## License
 
 This library was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it's released under the GPL 3 license.
