@@ -88,6 +88,9 @@ func (p *Plugin) HasFunc(name string) bool {
 
 // Call executes one of the declared callbacks of the plugin by its name.
 func (p *Plugin) Call(name string, args ...interface{}) (interface{}, error) {
+	p.Lock()
+	defer p.Unlock()
+
 	if cb, found := p.callbacks[name]; !found {
 		return nil, fmt.Errorf("%s does not name a function", name)
 	} else if ret, err := cb.Call(otto.NullValue(), args...); err != nil {
