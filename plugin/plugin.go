@@ -86,6 +86,13 @@ func (p *Plugin) HasFunc(name string) bool {
 	return found
 }
 
+// Set sets a variable into the VM of this plugin instance.
+func (p *Plugin) Set(name string, v interface{}) error {
+	p.Lock()
+	defer p.Unlock()
+	return p.vm.Set(name, v)
+}
+
 // Call executes one of the declared callbacks of the plugin by its name.
 func (p *Plugin) Call(name string, args ...interface{}) (interface{}, error) {
 	p.Lock()
