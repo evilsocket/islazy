@@ -132,3 +132,10 @@ func (u *UnsortedKV) Each(cb func(k, v string) bool) {
 		}
 	}
 }
+
+// Empty returns bool if the store is empty.
+func (u *UnsortedKV) Empty() bool {
+	u.Lock()
+	defer u.Unlock()
+	return len(u.m) == 0
+}
