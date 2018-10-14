@@ -9,7 +9,7 @@ import (
 func main() {
 	// create a new unsorted key value store on /tmp/ukv.dat
 	// it'll be flushed on each modification
-	kv, err := data.NewUnsortedKV("/tmp/ukv.dat", data.FlushOnEdit)
+	kv, err := data.NewDiskUnsortedKV("/tmp/ukv.dat")
 	if err != nil {
 		panic(err)
 	}
@@ -17,8 +17,9 @@ func main() {
 	kv.Set("foo", "bar")
 	kv.Set("moo", "boo")
 	kv.Set("burn", "the witches")
+
 	// load it
-	kv2, err := data.NewUnsortedKV("/tmp/ukv.dat", data.FlushNone)
+	kv2, err := data.NewDiskUnsortedKVReader("/tmp/ukv.dat")
 	if err != nil {
 		panic(err)
 	}
