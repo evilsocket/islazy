@@ -11,18 +11,24 @@ func main() {
 	fmt.Println(fs.Expand("~/"))
 	fmt.Println(fs.Exists("nope"))
 
-	// globbing
-	fs.Glob(".", "*.*", func(fileName string) error {
-		// do something with fileName
-		return nil
-	})
-
 	// reading
-	if lines, err := fs.LineReader("/some/file.log"); err != nil {
+	if lines, err := fs.LineReader("/etc/passwd"); err != nil {
 		fmt.Printf("error: %v\n", err)
 	} else {
 		for line := range lines {
 			fmt.Println(line)
 		}
+	}
+
+	// change working directory
+	err := fs.Chdir("/", func() error {
+		// glob
+		return fs.Glob(".", "*.*", func(fileName string) error {
+			fmt.Printf("%s\n", fileName)
+			return nil
+		})
+	})
+	if err != nil {
+		panic(err)
 	}
 }
