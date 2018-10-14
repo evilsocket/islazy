@@ -78,5 +78,8 @@ func (wq *workQueue) WaitDone() {
 
 // Stop stops the job queue and the workers.
 func (wq *workQueue) Stop() {
+	close(wq.stopChan)
+	wq.jobs.Wait()
+	wq.done.Wait()
 	close(wq.jobChan)
 }
