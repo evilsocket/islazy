@@ -10,6 +10,10 @@ import (
 	"github.com/robertkrimen/otto"
 )
 
+// Defines is a map containing the predefined objects
+// and functions for each vm of each plugin.
+var Defines = map[string]interface{}{}
+
 // Plugin is an object representing a javascript
 // file exporting functions and variables that
 // your project can use to extend its functionalities.
@@ -23,52 +27,77 @@ type Plugin struct {
 	Path string
 
 	vm        *otto.Otto
-	defines   map[string]interface{}
 	callbacks map[string]otto.Value
 	objects   map[string]otto.Value
 }
 
-// Load loads and compiles a plugin given its path with the
-// provided definitions.
-func Load(path string, defines map[string]interface{}) (*Plugin, error) {
-	raw, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
+// Parse parsesand compiles a plugin given its source code.
+func Parse(code string) (*Plugin, error) {
 	plugin := &Plugin{
-		Name:      strings.Replace(filepath.Base(path), ".js", "", -1),
-		Code:      string(raw),
-		Path:      path,
-		defines:   defines,
+		Code:      code,
 		callbacks: make(map[string]otto.Value),
 		objects:   make(map[string]otto.Value),
 	}
 
-	if err = plugin.compile(); err != nil {
+	if err := plugin.compile(); err != nil {
 		return nil, err
 	}
 
-	for name, val := range defines {
+	for name, val := range Defines {
 		if err := plugin.vm.Set(name, val); err != nil {
 			return nil, err
 		}
 	}
 
-	return plugin, err
+	return plugin, nil
+}
+
+// Load loads and compiles a plugin given its path.
+func Load(path string) (plug *Plugin, err error) {
+	if raw, err := ioutil.ReadFile(path); err != nil {
+		return nil, err
+	} else if plug, err = Parse(string(raw)); err != nil {
+		return nil, err
+	} else {
+		plug.Path = path
+		plug.Name = strings.Replace(filepath.Base(path), ".js", "", -1)
+	}
+	return plug, nil
 }
 
 // Clone returns a new instance identical to the plugin.
-func (p *Plugin) Clone() *Plugin {
-	clone, err := Load(p.Path, p.defines)
+func (p *Plugin) Clone() (clone *Plugin) {
+	var err error
+	if p.Path == "" {
+		clone, err = Parse(p.Code)
+	} else {
+		clone, err = Load(p.Path)
+	}
 	if err != nil {
 		panic(err) // this should never happen
 	}
 	return clone
 }
 
+// HasFunc returns true if the function with `name`
+// has been declared in the plugin code.
+func (p *Plugin) HasFunc(name string) bool {
+	_, found := p.callbacks[name]
+	return found
+}
+
+// Set sets a variable into the VM of this plugin instance.
+func (p *Plugin) Set(name string, v interface{}) error {
+	p.Lock()
+	defer p.Unlock()
+	return p.vm.Set(name, v)
+}
+
 // Call executes one of the declared callbacks of the plugin by its name.
 func (p *Plugin) Call(name string, args ...interface{}) (interface{}, error) {
+	p.Lock()
+	defer p.Unlock()
+
 	if cb, found := p.callbacks[name]; !found {
 		return nil, fmt.Errorf("%s does not name a function", name)
 	} else if ret, err := cb.Call(otto.NullValue(), args...); err != nil {

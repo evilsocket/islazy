@@ -12,7 +12,9 @@ type Job interface{}
 // Logic is the implementation of the logic each worker will execute.
 type Logic func(arg Job)
 
-type workQueue struct {
+// WorkQueue is the object representing an async jobs queue with
+// a given number of concurrent workers.
+type WorkQueue struct {
 	workers  int
 	jobChan  chan Job
 	stopChan chan struct{}
@@ -25,11 +27,11 @@ type workQueue struct {
 // If workers is greater or equal than zero, it will be auto
 // scaled to the number of logical CPUs usable by the current
 // process.
-func NewQueue(workers int, logic Logic) *workQueue {
+func NewQueue(workers int, logic Logic) *WorkQueue {
 	if workers <= 0 {
 		workers = runtime.NumCPU()
 	}
-	wq := &workQueue{
+	wq := &WorkQueue{
 		workers:  workers,
 		jobChan:  make(chan Job),
 		stopChan: make(chan struct{}),
@@ -46,7 +48,7 @@ func NewQueue(workers int, logic Logic) *workQueue {
 	return wq
 }
 
-func (wq *workQueue) worker(id int) {
+func (wq *WorkQueue) worker(id int) {
 	defer wq.done.Done()
 	for {
 		select {
@@ -61,18 +63,18 @@ func (wq *workQueue) worker(id int) {
 }
 
 // Add pushes a new job to the queue.
-func (wq *workQueue) Add(job Job) {
+func (wq *WorkQueue) Add(job Job) {
 	wq.jobs.Add(1)
 	wq.jobChan <- job
 }
 
 // Wait stops until all the workers stopped.
-func (wq *workQueue) Wait() {
+func (wq *WorkQueue) Wait() {
 	wq.done.Wait()
 }
 
 // WaitDone stops until all jobs on the queue have been processed.
-func (wq *workQueue) WaitDone() {
+func (wq *WorkQueue) WaitDone() {
 	wq.jobs.Wait()
 }
 
