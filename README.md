@@ -18,7 +18,7 @@ Examples for each package can be found in the [examples](https://github.com/evil
 ## Who's using islazy?
 
 * [bettercap](https://github.com/bettercap/bettercap)
-* [shellz](https://github.com/evilsocket/islazy)
+* [shellz](https://github.com/evilsocket/shellz)
 
 If your project is using this library add it to this README and send a PR!
 
