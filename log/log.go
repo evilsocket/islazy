@@ -55,6 +55,7 @@ func emit(s string) {
 		}
 	}
 
+	s = strings.Replace(s, "%", "%%", -1)
 	fmt.Fprintf(writer, s)
 	fmt.Fprintf(writer, "\n")
 }
