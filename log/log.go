@@ -55,6 +55,7 @@ func emit(s string) {
 		}
 	}
 
+	s = strings.Replace(s, "%", "%%", -1)
 	fmt.Fprintf(writer, s)
 	fmt.Fprintf(writer, "\n")
 }
@@ -69,7 +70,10 @@ func do(v Verbosity, format string, args ...interface{}) {
 
 	logLine := Format
 	currLevel = v
-	currMessage = fmt.Sprintf(format, args...)
+	currMessage = format
+	if args != nil {
+		currMessage = fmt.Sprintf(format, args...)
+	}
 	// process token -> callback
 	for token, cb := range Tokens {
 		logLine = strings.Replace(logLine, token, cb(), -1)
