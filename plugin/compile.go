@@ -13,6 +13,14 @@ func (p *Plugin) compile() (err error) {
 	for name := range p.vm.Context().Symbols {
 		predefined[name] = true
 	}
+
+	// defines
+	for name, val := range Defines {
+		if err := p.vm.Set(name, val); err != nil {
+			return err
+		}
+	}
+
 	// run the code once in order to define all the functions
 	// and validate the syntax, then get the callbacks
 	if _, err = p.vm.Run(p.Code); err != nil {

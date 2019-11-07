@@ -43,12 +43,6 @@ func Parse(code string) (*Plugin, error) {
 		return nil, err
 	}
 
-	for name, val := range Defines {
-		if err := plugin.vm.Set(name, val); err != nil {
-			return nil, err
-		}
-	}
-
 	return plugin, nil
 }
 
