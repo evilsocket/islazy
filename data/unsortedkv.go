@@ -14,7 +14,7 @@ import (
 // UnsortedKV is a thread safe and unsorted key-value
 // storage with optional persistency on disk.
 type UnsortedKV struct {
-	sync.Mutex
+	sync.RWMutex
 	fileName string
 	m        map[string]string
 	policy   FlushPolicy
@@ -65,15 +65,15 @@ func NewMemUnsortedKV() (*UnsortedKV, error) {
 // MarshalJSON is used to serialize the UnsortedKV data structure to
 // JSON correctly.
 func (u *UnsortedKV) MarshalJSON() ([]byte, error) {
-	u.Lock()
-	defer u.Unlock()
+	u.RLock()
+	defer u.RUnlock()
 	return json.Marshal(u.m)
 }
 
 // Has return true if name exists in the store.
 func (u *UnsortedKV) Has(name string) bool {
-	u.Lock()
-	defer u.Unlock()
+	u.RLock()
+	defer u.RUnlock()
 	_, found := u.m[name]
 	return found
 }
@@ -81,8 +81,8 @@ func (u *UnsortedKV) Has(name string) bool {
 // Get return the value of the named object if present, or returns
 // found as false otherwise.
 func (u *UnsortedKV) Get(name string) (v string, found bool) {
-	u.Lock()
-	defer u.Unlock()
+	u.RLock()
+	defer u.RUnlock()
 	v, found = u.m[name]
 	return
 }
@@ -108,8 +108,8 @@ func (u *UnsortedKV) flushUnlocked() error {
 // Flush flushes the store to disk if the flush policy
 // is different than FlushNone
 func (u *UnsortedKV) Flush() error {
-	u.Lock()
-	defer u.Unlock()
+	u.RLock()
+	defer u.RUnlock()
 	if u.policy != FlushNone {
 		return u.flushUnlocked()
 	}
@@ -162,7 +162,7 @@ func (u *UnsortedKV) Each(cb func(k, v string) bool) {
 
 // Empty returns bool if the store is empty.
 func (u *UnsortedKV) Empty() bool {
-	u.Lock()
-	defer u.Unlock()
+	u.RLock()
+	defer u.RUnlock()
 	return len(u.m) == 0
 }
