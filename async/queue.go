@@ -28,12 +28,20 @@ type WorkQueue struct {
 // scaled to the number of logical CPUs usable by the current
 // process.
 func NewQueue(workers int, logic Logic) *WorkQueue {
+	return createQueue(workers, logic, 0)
+}
+
+func NewBufferedQueue(workers int, logic Logic, size int) *WorkQueue {
+	return createQueue(workers, logic, size)
+}
+
+func createQueue(workers int, logic Logic, bufferSize int) *WorkQueue {
 	if workers <= 0 {
 		workers = runtime.NumCPU()
 	}
 	wq := &WorkQueue{
 		workers:  workers,
-		jobChan:  make(chan Job),
+		jobChan:  make(chan Job, bufferSize),
 		stopChan: make(chan struct{}),
 		jobs:     sync.WaitGroup{},
 		done:     sync.WaitGroup{},
