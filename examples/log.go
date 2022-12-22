@@ -13,6 +13,9 @@ func main() {
 	log.TimeFormat = "15:04:05"
 	log.DateTimeFormat = "2006-01-02 15:04:05"
 	log.Format = "{datetime} {level:color}{level:name}{reset} {message}"
+	log.Callback = func(verbosity log.Verbosity, message string) {
+		// fmt.Printf("got message '%s'\n", message)
+	}
 
 	if err := log.Open(); err != nil {
 		panic(err)

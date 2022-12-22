@@ -10,6 +10,8 @@ import (
 	"github.com/evilsocket/islazy/tui"
 )
 
+type MessageCallback = func(verbosity Verbosity, message string)
+
 var (
 	// Level represents the current verbosity level of the logging system.
 	Level = INFO
@@ -19,6 +21,8 @@ var (
 	NoEffects = false
 	// OnFatal represents the callback/action to execute on Fatal messages.
 	OnFatal = ExitOnFatal
+	// A custom callback to execute for every log message.
+	Callback = dummyCallback
 
 	lock        = &sync.Mutex{}
 	currMessage = ""
@@ -47,17 +51,27 @@ func Close() {
 	}
 }
 
-func emit(s string) {
-	// remove all effects if found
-	if NoEffects {
-		for _, re := range reEffects {
-			s = re.ReplaceAllString(s, "")
-		}
-	}
+func dummyCallback(verbosity Verbosity, message string) {
 
-	s = strings.Replace(s, "%", "%%", -1)
-	fmt.Fprintf(writer, s)
-	fmt.Fprintf(writer, "\n")
+}
+
+func removeEffects(s string) string {
+	for _, re := range reEffects {
+		s = re.ReplaceAllString(s, "")
+	}
+	return s
+}
+
+func emit(v Verbosity, s string) {
+	// remove all effects if found
+	plain := removeEffects(s)
+
+	Callback(v, plain)
+
+	if NoEffects {
+		s = plain
+	}
+	fmt.Fprintf(writer, "%s\n", s)
 }
 
 func do(v Verbosity, format string, args ...interface{}) {
@@ -87,7 +101,7 @@ func do(v Verbosity, format string, args ...interface{}) {
 		logLine += tui.RESET
 	}
 
-	emit(logLine)
+	emit(v, logLine)
 }
 
 // Raw emits a message without format to the logs.
@@ -96,7 +110,7 @@ func Raw(format string, args ...interface{}) {
 	defer lock.Unlock()
 
 	currMessage = fmt.Sprintf(format, args...)
-	emit(currMessage)
+	emit(INFO, currMessage)
 }
 
 // Debug emits a debug message.
