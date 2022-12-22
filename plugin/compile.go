@@ -14,7 +14,7 @@ func (p *Plugin) compile() (err error) {
 		predefined[name] = true
 	}
 
-	// defines
+	// define symbols
 	for name, val := range Defines {
 		if err := p.vm.Set(name, val); err != nil {
 			return err
